@@ -99,7 +99,7 @@ def BashCPM(nside=128, rcube=64, nstep=20, ngrid=256, z_init=19, output_redshift
         "",
         "set i = 1",
         "while ( $i <= 6 ) ",
-        "$pp/sample_ff 100000 555 < out.0$i > output/ascii.nside$nside.rcube$rcube.nstep$nsteps.ngrid=$ngrid.zinit$z_init.0$i", 
+        "$pp/sample_ff 100000 555 < out.0$i > output/ascii.nside$nside.rcube$rcube.nstep$nsteps.ngrid$ngrid.zinit$z_init.0$i", 
         "$pp/covar3 0.1 20 15 "+str(rcube)+" 0 "+str(rcube)+" 1 output/ascii.nside$nside.rcube$rcube.nstep$nsteps.ngrid$ngrid.zinit$z_init.0$i a 0 1 auto > output/xi.nside$nside.rcube$rcube.nstep$nsteps.ngrid$ngrid.zinit$z_init.0$i", 
         "@ i = $i + 1",
         "end",
