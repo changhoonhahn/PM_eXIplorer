@@ -1,0 +1,8 @@
+sh.*
+out*
+*.out
+*.bat
+*.dat
+*.pyc
+output/ascii*
+output/xi*
