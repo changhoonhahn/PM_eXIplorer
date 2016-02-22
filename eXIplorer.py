@@ -9,7 +9,7 @@ from defutility.plotting import prettyplot
 from defutility.plotting import prettycolors
 
 
-def BashCPM(nside=128, rcube=64, nstep=20, ngrid=256, z_init=19): 
+def BashCPM(nside=128, rcube=64, nstep=20, ngrid=256, z_init=19, output_redshifts=[19, 5, 3, 1, 0.5, 0]): 
     ''' Write out executable Bash script with input parameters
 
     Parameters
@@ -41,6 +41,7 @@ def BashCPM(nside=128, rcube=64, nstep=20, ngrid=256, z_init=19):
     bash_f = open(bash_file, 'w')
 
     a_start = round(1./(z_init + 1.),2)
+    output_redshift_str = ' '.join([str(out) for out in output_redshifts])
 
     bash_content = '\n'.join([
         "#! /bin/csh -f",
@@ -51,7 +52,7 @@ def BashCPM(nside=128, rcube=64, nstep=20, ngrid=256, z_init=19):
         "",
         "set nside = "+str(nside)+" # number of particles ^(1/3)",
         "set rcube = "+str(rcube)+" # size of box in Mpc/h",
-        "set h0 = "+str(h0),
+        "set h0 = .72",
         "set omega_m = 1",
         "set omega_l = 0",
         "set omega_b = 0.045",
@@ -82,7 +83,7 @@ def BashCPM(nside=128, rcube=64, nstep=20, ngrid=256, z_init=19):
         "echo $omega_l > a05",
         "echo $z_init > a06",
         "echo $nsteps > a07",
-        "echo 19 5 3 1 0.5 0 > a08",
+        "echo "+output_redshift_str+" > a08",
         "cat a?? > cpm.bat",
         "rm -f a??",
         "",
@@ -98,8 +99,8 @@ def BashCPM(nside=128, rcube=64, nstep=20, ngrid=256, z_init=19):
         "",
         "set i = 1",
         "while ( $i <= 6 ) ",
-        "$pp/sample_ff 100000 555 < out.0$i > output/ascii.nside$nside.rcube$rcube.nstep$nstep.ngrid=$ngrid.zinit$z_init.0$i", 
-        "$pp/covar3 0.1 20 15 "+str(rcube)+" 0 "+str(rcube)+" 1 output/ascii.nside$nside.rcube$rcube.nstep$nstep.ngrid=$ngrid.zinit$z_init.0$i a 0 1 auto > output/xi.nside$nside.rcube$rcube.nstep$nstep.ngrid=$ngrid.zinit$z_init.0$i", 
+        "$pp/sample_ff 100000 555 < out.0$i > output/ascii.nside$nside.rcube$rcube.nstep$nsteps.ngrid=$ngrid.zinit$z_init.0$i", 
+        "$pp/covar3 0.1 20 15 "+str(rcube)+" 0 "+str(rcube)+" 1 output/ascii.nside$nside.rcube$rcube.nstep$nsteps.ngrid$ngrid.zinit$z_init.0$i a 0 1 auto > output/xi.nside$nside.rcube$rcube.nstep$nsteps.ngrid$ngrid.zinit$z_init.0$i", 
         "@ i = $i + 1",
         "end",
         "",
@@ -115,7 +116,7 @@ def BashCPM(nside=128, rcube=64, nstep=20, ngrid=256, z_init=19):
     
     return None
 
-def RunBashCPM(nside=128, rcube=64): 
+def RunBashCPM(nside=128, rcube=64, nstep=20, ngrid=256, z_init=19):
     ''' Execute CPM bash script
     '''
     bash_file = ''.join([
